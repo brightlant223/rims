@@ -40,7 +40,7 @@ def create_app(test_config: dict | None = None) -> Flask:
     # supports a static list/pattern (not a callable), so `CORS_ORIGINS` is an
     # app-construction-time setting: pass it in `test_config` rather than
     # mutating `app.config` after the app exists.
-    CORS(app, resources={r"/api/*": {"origins": _allowed_origins(app)}}, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": _allowed_origins(app)}}, supports_credentials=True)
 
     init_database(app)
     Migrate(app, db)

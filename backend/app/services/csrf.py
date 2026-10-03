@@ -45,16 +45,16 @@ def set_csrf_cookie(response, token: str | None = None) -> None:
     """
     Issue the readable CSRF cookie.
 
-    Not httpOnly, and deliberately not `Secure`-only either: it must be readable
-    by the SPA on the same site. SameSite=Lax still keeps it off cross-site posts.
+    Not httpOnly. `SameSite=None` with `Secure=True` is required for cross-site
+    cookie delivery (e.g., Netlify frontend -> PythonAnywhere backend).
     """
     token = token or generate_csrf_token()
     response.set_cookie(
         _config("CSRF_COOKIE_NAME"),
         token,
         httponly=False,
-        samesite="Lax",
-        secure=bool(_config("IS_PRODUCTION")),
+        samesite="None",
+        secure=True,
         max_age=_config("REFRESH_TOKEN_TTL_SECONDS"),
         path="/",
     )

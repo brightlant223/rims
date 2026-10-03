@@ -121,16 +121,14 @@ def _cookie_kwargs(max_age: int) -> dict:
     """
     Shared cookie flags.
 
-    `SameSite=Lax` is the most restrictive value that still lets the SPA survive a
-    top-level navigation, and it is what makes the double-submit CSRF token
-    meaningful. `Secure` is added in production only, because a Secure cookie is
-    silently dropped over plain HTTP and would break local development.
+    `SameSite=None` with `Secure=True` is required for cross-site cookie delivery
+    (e.g., Netlify frontend -> PythonAnywhere backend). `Secure` requires HTTPS.
     """
     is_production = bool(_config("IS_PRODUCTION"))
     return {
         "httponly": True,
-        "samesite": "Lax",
-        "secure": is_production,
+        "samesite": "None",
+        "secure": True,
         "max_age": max_age,
         "path": "/",
     }
@@ -162,14 +160,14 @@ def clear_auth_cookies(response) -> None:
     response.delete_cookie(
         _config("ACCESS_COOKIE_NAME"),
         path="/",
-        samesite="Lax",
-        secure=bool(_config("IS_PRODUCTION")),
+        samesite="None",
+        secure=True,
     )
     response.delete_cookie(
         _config("REFRESH_COOKIE_NAME"),
         path=f"{_config('API_PREFIX')}/auth",
-        samesite="Lax",
-        secure=bool(_config("IS_PRODUCTION")),
+        samesite="None",
+        secure=True,
     )
 
 
