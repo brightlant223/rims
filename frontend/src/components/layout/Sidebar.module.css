@@ -18,15 +18,14 @@
   flex-direction: column;
   gap: var(--space-5);
   padding: var(--space-5) var(--space-3) var(--space-4);
-  /* The plate is painted from the fixed `--color-rail` family so it cannot
-     invert with the theme, then finished with a brass tint on top for the
-     luxury treatment. The rail token is the base layer (the last paint in the
-     stack), so the declared base is still the rail colour the contrast test
-     asserts; the gradients above it only add depth. */
-  background:
+  /* The plate's base colour is the fixed `--color-rail` family so it cannot
+     invert with the theme (the labelled test asserts this token stays the
+     declared background). The two gradients below only add the luxury
+     atmosphere — a brass bloom and a vertical fall — on top of that base. */
+  background: var(--color-rail);
+  background-image:
     radial-gradient(120% 60% at 0% 0%, rgb(216 189 130 / 0.07), transparent 60%),
-    linear-gradient(180deg, rgb(216 189 130 / 0.04) 0%, transparent 55%),
-    var(--color-rail);
+    linear-gradient(180deg, rgb(216 189 130 / 0.04) 0%, transparent 55%);
   border-inline-end: var(--border-width) solid var(--brass-line);
   color: var(--color-rail-ink);
   transition: inline-size var(--duration-slow) var(--ease-out);
