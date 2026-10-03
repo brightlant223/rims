@@ -1,33 +1,80 @@
 /**
- * Dashboard metric tile (S18.11). Colours come from tokens only (S18.11) so the
- * dark theme is a swap rather than a rewrite.
+ * Dashboard metric tile (S18.11). Colours come from tokens only (§18.11) so
+ * the dark theme is a swap rather than a rewrite.
  *
+ * The tile is a frosted glass card finished with a champagne-brass hairline,
+ * so the six summary figures read as a mounted panel rather than a flat list.
  * The value is the loud element and the label is a quiet micro-label, matching
- * S18.9's "uppercase micro-labels with letter-spacing" and S18.7's hierarchy.
+ * §18.9's "uppercase micro-labels with letter-spacing" and §18.7's hierarchy.
+ *
+ * Layout is intentionally unchanged from the plain grid — only the skin changes
+ * — so the surrounding page grid (2-up on phones, 3-up from 768px) still
+ * computes identically.
  */
 
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
   min-inline-size: 0;
+  padding: var(--space-4);
+  background:
+    radial-gradient(90% 60% at 100% 0%, rgb(200 162 82 / 0.07), transparent 60%),
+    var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+/* A brass hairline along the top edge marks each tile as a "figure" rather
+   than an arbitrary panel. It is a single accent line, never a coloured band. */
+.card::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--brass) 30%,
+    var(--brass-bright) 50%,
+    var(--brass) 70%,
+    transparent 100%
+  );
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  opacity: 0.85;
+}
+
+.card:hover {
+  border-color: var(--brass-line-strong);
+  box-shadow: var(--shadow-lift);
 }
 
 .label {
+  font-family: var(--font-wordmark);
   font-size: var(--font-size-xs);
   font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-wide);
+  letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
-  color: var(--color-ink-subtle);
+  color: var(--brass);
 }
 
 .value {
-  /* S18.9: tabular figures on all money, so tiles align and do not jitter. */
+  /* §18.9: tabular figures on all money, so tiles align and do not jitter.
+     The figure itself is set in the display serif to sit with the app's
+     headings; the tabular-num feature keeps the digits aligned. */
+  font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
   font-size: var(--font-size-2xl);
   font-weight: var(--weight-semibold);
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: var(--tracking-tight);
   color: var(--color-ink);
   /* A long rupee figure must not widen the tile grid on a 360 px screen. */
   overflow-wrap: anywhere;

@@ -29,7 +29,8 @@
   border-radius: var(--radius-input);
   transition:
     border-color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out);
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 textarea.control {
@@ -59,16 +60,17 @@ select.control {
   border-color: var(--color-ink-subtle);
 }
 
+/* Focus is the house brass ring — the same accent as the login field, so the
+   whole form surface reads as one system. */
 .control:focus {
-  border-color: var(--color-ring);
-  /* The global :focus-visible outline stays; this just tightens the border so a
-     typed field reads as active even before the ring animates in. */
+  border-color: var(--brass);
   outline: none;
+  box-shadow: 0 0 0 3px rgb(200 162 82 / 0.2);
 }
 
 .control:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-ring);
-  outline-offset: var(--focus-ring-offset);
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(200 162 82 / 0.2);
 }
 
 .control:disabled {
@@ -88,6 +90,7 @@ select.control {
 
 .invalid:focus-visible {
   outline-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgb(179 38 30 / 0.2);
 }
 
 .hint {
