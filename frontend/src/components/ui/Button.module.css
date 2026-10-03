@@ -9,13 +9,16 @@
   border-radius: var(--radius-md);
   font-family: var(--font-body);
   font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   transition:
     background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
+    box-shadow var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 .button:disabled,
@@ -30,15 +33,16 @@
 
 /* Only one primary may exist per screen, so it is the gold treatment from §18.4. */
 .primary {
-  background: var(--color-gold);
+  background: linear-gradient(180deg, var(--brass-bright) 0%, var(--color-gold) 100%);
   color: var(--color-on-gold);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-gold);
 }
 
 .primary:hover:not(:disabled) {
-  background: var(--color-gold-strong);
+  background: linear-gradient(180deg, var(--brass-bright) 0%, var(--color-gold-strong) 100%);
   box-shadow: var(--shadow-gold-strong);
+  transform: translateY(-1px);
 }
 
 .primary:active:not(:disabled) {
@@ -58,6 +62,7 @@
 
 .secondary:hover:not(:disabled) {
   background: var(--color-surface-alt);
+  border-color: var(--brass-line-strong);
 }
 
 .ghost {
@@ -67,6 +72,7 @@
 
 .ghost:hover:not(:disabled) {
   background: var(--color-surface-alt);
+  color: var(--brass);
 }
 
 .danger {

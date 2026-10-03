@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-8) var(--space-5);
+  padding: var(--space-10) var(--space-5);
   text-align: center;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -11,17 +11,23 @@
 }
 
 .muted {
-  background: transparent;
+  background:
+    radial-gradient(70% 90% at 50% 0%, rgb(200 162 82 / 0.05), transparent 70%),
+    transparent;
   border-style: dashed;
+  border-color: var(--brass-line);
 }
 
 .icon {
   display: grid;
   place-items: center;
-  width: var(--space-11);
-  height: var(--space-11);
-  color: var(--color-gold);
-  background: var(--color-gold-soft);
+  width: var(--space-12);
+  height: var(--space-12);
+  color: var(--brass);
+  background:
+    radial-gradient(70% 70% at 50% 30%, rgb(200 162 82 / 0.16), transparent 70%),
+    var(--color-surface-alt);
+  border: 1px solid var(--brass-line);
   border-radius: var(--radius-pill);
 }
 

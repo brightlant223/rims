@@ -3,6 +3,9 @@
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xs);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .none {
@@ -25,10 +28,12 @@
   cursor: pointer;
   transition:
     border-color var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out);
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 .interactive:hover {
-  border-color: var(--color-border-strong);
+  border-color: var(--brass-line-strong);
   box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
 }

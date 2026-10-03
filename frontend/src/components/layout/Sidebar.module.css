@@ -1,11 +1,12 @@
 /**
  * The navigation rail.
  *
- * The plate and its text come from the `--color-rail*` family rather than from
- * `--color-ink` / `--color-ink-inverse`. Those are *text* tokens and they invert
- * with the theme, so a rail painted with them became a near-white slab in the dark
- * theme; these are fixed in `tokens.css` for both themes, which is what the old
- * "always the ink plate" comments here assumed but never actually had.
+ * The plate is the house obsidian glass: a deep ink gradient finished with a
+ * single brass hairline down its inner edge, so the rail reads as a mounted
+ * panel rather than a plain block. It stays a *dark plate in both themes* —
+ * the `--color-rail*` family is fixed in `tokens.css` precisely so the rail
+ * cannot invert with the theme (a themed rail became a near-white slab in dark
+ * mode and left the labels at ~2.6:1).
  */
 .sidebar {
   position: fixed;
@@ -17,7 +18,12 @@
   flex-direction: column;
   gap: var(--space-5);
   padding: var(--space-5) var(--space-3) var(--space-4);
-  background: var(--color-rail);
+  /* Deep obsidian gradient, matching the sign-in brand panel and the brief's
+     #0F0E0D / #171512 pair. */
+  background:
+    radial-gradient(120% 60% at 0% 0%, rgb(216 189 130 / 0.06), transparent 60%),
+    linear-gradient(180deg, var(--ink-panel) 0%, var(--obsidian) 100%);
+  border-inline-end: var(--border-width) solid var(--brass-line);
   color: var(--color-rail-ink);
   transition: inline-size var(--duration-slow) var(--ease-out);
 }
@@ -26,6 +32,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  padding-block-end: var(--space-4);
+  border-block-end: var(--border-width) solid var(--color-rail-border);
 }
 
 .brand {
@@ -35,6 +43,7 @@
   min-inline-size: 0;
   padding-block: var(--space-1);
 }
+
 .collapseToggle {
   display: grid;
   place-items: center;
@@ -53,7 +62,7 @@
 
 .collapseToggle:hover {
   background: var(--color-rail-hover);
-  color: var(--color-rail-ink);
+  color: var(--brass-bright);
 }
 
 .collapseToggle:focus-visible {
@@ -84,6 +93,7 @@
 }
 
 .link {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -97,7 +107,8 @@
   white-space: nowrap;
   transition:
     background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
+    color var(--duration-fast) var(--ease-out),
+    padding-inline-start var(--duration-fast) var(--ease-out);
 }
 
 .link:hover {
@@ -105,11 +116,28 @@
   color: var(--color-rail-ink);
 }
 
+/* The active destination is marked by a brushed-brass fill plus a bright
+   leading rule, so the current section is unmistakable without shouting. */
 .active,
 .active:hover {
-  background: var(--color-gold);
-  color: var(--color-on-gold);
+  background: linear-gradient(
+    90deg,
+    rgb(216 189 130 / 0.22) 0%,
+    rgb(216 189 130 / 0.06) 100%
+  );
+  color: var(--brass-bright);
   font-weight: var(--weight-semibold);
+}
+
+.active::before {
+  content: '';
+  position: absolute;
+  inset-block: 20%;
+  inset-inline-start: 0;
+  inline-size: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--brass);
+  box-shadow: 0 0 10px rgb(216 189 130 / 0.55);
 }
 
 .footer {
@@ -160,6 +188,8 @@
   overflow: hidden;
   border-radius: var(--radius-pill);
   background: var(--color-rail-hover);
+  /* Brass hairline ring lifts the identity chip off the plate. */
+  box-shadow: 0 0 0 1px var(--brass-line-strong);
   color: var(--color-rail-ink);
 }
 
@@ -244,6 +274,8 @@
   display: flex;
   inline-size: 100%;
   block-size: 100%;
+  border-inline-end: var(--border-width) solid var(--brass-line-strong);
+  box-shadow: var(--shadow-glass);
   padding-block-start: calc(var(--space-5) + env(safe-area-inset-top));
   padding-block-end: calc(var(--space-4) + env(safe-area-inset-bottom));
   padding-inline-start: calc(var(--space-3) + env(safe-area-inset-left));
@@ -257,8 +289,8 @@
   font-size: var(--font-size-xs);
   font-weight: var(--weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-rail-ink-muted);
+  letter-spacing: var(--tracking-widest);
+  color: var(--brass);
 }
 
 /* ---------------------------------------------------------- collapsed rail */

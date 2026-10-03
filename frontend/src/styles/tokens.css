@@ -336,3 +336,60 @@
   --scrollbar-thumb: rgb(240 238 232 / 0.22);
   --scrollbar-thumb-hover: rgb(240 238 232 / 0.42);
 }
+
+/* ------------------------------------------------------------------ *
+ * Luxury layer — champagne brass & obsidian glass (UI/UX revamp).
+ *
+ * The sign-in page established this palette locally in its own module; it is
+ * promoted to tokens here so every surface in the app draws from one
+ * definition instead of each module re-declaring roughly the same five hex
+ * values. Same rule as the rest of this file: raw values live here, consumers
+ * read var(--token).
+ * ------------------------------------------------------------------ */
+:root {
+  /* Champagne brass — the house accent. `--brass` is the resting tone,
+     `--brass-bright` the hover/highlight, and the two hairlines the border
+     weights (0.15 quiet edge, 0.32 interactive edge). Never a bright yellow. */
+  --brass: #c8a252;
+  --brass-bright: #d8bd82;
+  --brass-line: rgb(200 162 82 / 0.15);
+  --brass-line-strong: rgb(200 162 82 / 0.32);
+
+  /* Obsidian glass — the frosted dark surface family, for elevated panels
+     (hero cards, summary bars, the sign-in card). Fixed in both themes: like
+     the charcoal brand plate, these read as "glass over ink" regardless of the
+     page theme, so their contrast never rides on a theme flip. */
+  --obsidian: #0f0e0d;
+  --ink-panel: #171512;
+  --ink-card: rgb(23 21 18 / 0.85);
+  --ink-card-border: rgb(216 189 130 / 0.18);
+  --ink-field: rgb(255 255 255 / 0.045);
+  --ink-field-border: rgb(245 241 232 / 0.14);
+  --on-card: #f3efe6;
+  --on-card-muted: #b9b1a1;
+
+  /* Atmospheric bloom — a soft radial wash placed behind hero/panel content,
+     defined once so hero sections do not each invent their own gradient. */
+  --glow-brass:
+    radial-gradient(42% 38% at 50% 0%, rgb(200 162 82 / 0.16), transparent 72%),
+    radial-gradient(34% 34% at 88% 100%, rgb(200 162 82 / 0.08), transparent 70%);
+
+  /* Elevation for glass surfaces; deeper than --shadow-lg because it sits
+     under a translucent panel rather than on an opaque card. */
+  --shadow-glass: 0 24px 60px -24px rgb(0 0 0 / 0.55);
+  --shadow-lift: 0 10px 30px -12px rgb(29 27 22 / 0.16);
+
+  --blur-glass: 12px;
+  --blur-glass-strong: 14px;
+}
+
+[data-theme='dark'] {
+  /* On the dark theme the same brass reads slightly brighter so it keeps its
+     contrast against obsidian, exactly as --color-gold does above. */
+  --brass: #d8bd82;
+  --brass-bright: #ecd9a6;
+  --brass-line: rgb(216 189 130 / 0.18);
+  --brass-line-strong: rgb(216 189 130 / 0.36);
+
+  --shadow-lift: 0 10px 30px -12px rgb(0 0 0 / 0.6);
+}

@@ -4,7 +4,7 @@
  * The panel is the sidebar plate moved off the left edge, so it reads as the same
  * navigation rather than a second one. Everything it contains is themed through
  * tokens — including the plate, which comes from the fixed `--color-rail*` family
- * and is therefore the ink plate in both themes exactly as the sidebar is.
+ * and is therefore the obsidian plate in both themes exactly as the sidebar is.
  *
  * Motion (§18.10): transform and opacity only, on `--duration-slow` (220ms,
  * inside the 200–300ms band) with `--ease-out`. The reduced-motion block in
@@ -31,15 +31,18 @@
   z-index: var(--z-modal);
 }
 
-/* The scrim covers the viewport and sits under the panel. `--color-scrim` is the
-   same token the sheets use, and no blur: a full-screen backdrop-filter is the
-   most expensive thing on a mid-range phone and buys nothing here. */
+/* The scrim covers the viewport and sits under the panel. It carries a light
+   backdrop blur so the drawer reads as glass over a receding page — the brief's
+   "clean backdrop blur" — kept modest because a full-screen backdrop-filter is
+   the most expensive thing on a mid-range phone. */
 .backdrop {
   position: absolute;
   inset: 0;
   border: 0;
   padding: 0;
   background: var(--color-scrim);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
   opacity: 0;
   transition: opacity var(--duration-slow) var(--ease-out);
 }
