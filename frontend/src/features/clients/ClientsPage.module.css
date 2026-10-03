@@ -47,13 +47,13 @@
 
 .search:focus {
   outline: none;
-  border-color: var(--color-gold);
-  box-shadow: 0 0 0 2px var(--color-gold-soft);
+  border-color: var(--brass);
+  box-shadow: 0 0 0 3px rgb(200 162 82 / 0.2);
 }
 
 .search:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-ring);
-  outline-offset: var(--focus-ring-offset);
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(200 162 82 / 0.2);
 }
 
 /* Replaced by the clear button below, which is a labelled button rather than a
@@ -101,6 +101,9 @@
   text-decoration: none;
 }
 
+/* The client directory is a row of frosted cards, each with a delicate brass
+   hairline down the left edge — the same treatment as the quotation and
+   invoice lists, so all three directory pages read as one system. */
 .list {
   list-style: none;
   margin: 0;
@@ -114,7 +117,24 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-3);
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-inline-start: 3px solid var(--brass-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.row:hover {
+  border-inline-start-color: var(--brass);
+  border-color: var(--brass-line-strong);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-1px);
 }
 
 .summary {
