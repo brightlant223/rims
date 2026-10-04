@@ -31,7 +31,7 @@ from app.services.auth import (
     load_user_from_refresh_token,
     set_auth_cookies,
 )
-from app.services.csrf import csrf_protect, set_csrf_cookie
+from app.services.csrf import csrf_protect, generate_csrf_token, set_csrf_cookie
 from app.services.rate_limit import (
     client_ip,
     enforce_login_rate_limit,
@@ -57,11 +57,13 @@ def csrf_token():
     no token yet on a cold visit. This endpoint is the bootstrap. It is a GET, so
     the cross-origin preflight problem does not apply and no CSRF check is needed
     for it.
-    """
-    from flask import jsonify
 
-    response = jsonify({"data": {"issued": True}})
-    set_csrf_cookie(response)
+    Returns the token in the response body for cross-origin clients that cannot
+    read the cookie via document.cookie.
+    """
+    token = generate_csrf_token()
+    response = success({"csrf_token": token})
+    set_csrf_cookie(response, token=token)
     return response
 
 
@@ -94,7 +96,9 @@ def login():
     response = success({"user": user.to_dict()})
     set_auth_cookies(response, user)
     # A fresh token pair, so rotate the CSRF cookie too (§16).
-    set_csrf_cookie(response)
+    token = set_csrf_cookie(response)
+    # Update the response data to include the new CSRF token
+    response.get_json()["data"]["csrf_token"] = token
     return response
 
 
@@ -123,7 +127,8 @@ def logout():
 
     response = success({"logged_out": True})
     clear_auth_cookies(response)
-    set_csrf_cookie(response)
+    token = set_csrf_cookie(response)
+    response.get_json()["data"]["csrf_token"] = token
     return response
 
 
@@ -151,6 +156,8 @@ def refresh():
 
     response = success({"user": user.to_dict()})
     set_auth_cookies(response, user)
+    token = set_csrf_cookie(response)
+    response.get_json()["data"]["csrf_token"] = token
     return response
 
 
@@ -198,5 +205,6 @@ def change_password():
 
     response = success({"password_changed": True, "reauthenticate": True})
     clear_auth_cookies(response)
-    set_csrf_cookie(response)
+    token = set_csrf_cookie(response)
+    response.get_json()["data"]["csrf_token"] = token
     return response

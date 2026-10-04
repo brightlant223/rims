@@ -5,7 +5,7 @@
  * payload, because that is the only shape callers should deal with (§9.1).
  */
 
-import { apiRequest, del, ensureCsrfToken, get, post, put } from '../client.js'
+import { apiRequest, del, ensureCsrfToken, get, post, put, clearInMemoryCsrfToken } from '../client.js'
 
 /** Ask for a CSRF token. Called once on app start, before the first mutation. */
 export const bootstrapCsrf = () => ensureCsrfToken()
@@ -17,7 +17,11 @@ export const fetchCsrfToken = () => get('/auth/csrf')
 export const login = (email, password) => post('/auth/login', { email, password })
 
 /** POST /auth/logout */
-export const logout = () => post('/auth/logout')
+export const logout = async () => {
+  const result = await post('/auth/logout')
+  clearInMemoryCsrfToken()
+  return result
+}
 
 /** POST /auth/refresh */
 export const refreshSession = () => post('/auth/refresh')

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { routes } from '../../app/routes.jsx'
 import { AuthProvider } from './AuthProvider.jsx'
+import { clearInMemoryCsrfToken } from '../../api/client.js'
 
 /**
  * Frontend auth tests (FR-A1 … FR-A5).
@@ -94,6 +95,8 @@ beforeEach(() => {
     const name = entry.split('=')[0].trim()
     if (name) document.cookie = `${name}=; Max-Age=0; path=/`
   })
+  // Also clear the in-memory CSRF token used for cross-origin scenarios.
+  clearInMemoryCsrfToken()
 })
 
 describe('route protection', () => {

@@ -90,6 +90,39 @@ const CSRF_HEADER_NAME = 'X-CSRF-Token'
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
 
 /**
+ * In-memory CSRF token store for cross-origin scenarios.
+ *
+ * When the frontend and backend are on different origins (e.g., Netlify + PythonAnywhere),
+ * the browser blocks JavaScript from reading the CSRF cookie via document.cookie due to
+ * Same-Origin Policy. The backend returns the token in the JSON response body, which we
+ * store here and use for the X-CSRF-Token header.
+ */
+let inMemoryCsrfToken = ''
+
+/**
+ * Sets the in-memory CSRF token (called when backend returns a new token).
+ * @param {string} token
+ */
+export function setInMemoryCsrfToken(token) {
+  if (token) inMemoryCsrfToken = token
+}
+
+/**
+ * Clears the in-memory CSRF token (called on logout).
+ */
+export function clearInMemoryCsrfToken() {
+  inMemoryCsrfToken = ''
+}
+
+/**
+ * Gets the current CSRF token, preferring in-memory over cookie.
+ * @returns {string}
+ */
+function getCsrfToken() {
+  return inMemoryCsrfToken || readCsrfToken()
+}
+
+/**
  * Endpoints whose 401 is a final answer, so they must never trigger a refresh.
  *
  * /auth/refresh cannot fix itself, and /auth/login 401-ing means the credentials
@@ -200,9 +233,14 @@ async function toApiError(response) {
  * is missing.
  */
 export async function ensureCsrfToken() {
-  if (readCsrfToken()) return readCsrfToken()
+  if (getCsrfToken()) return getCsrfToken()
   try {
-    await apiRequest('/auth/csrf', { skipAuthRetry: true })
+    const res = await apiRequest('/auth/csrf', { skipAuthRetry: true })
+    const token = res?.data?.csrf_token || res?.csrf_token
+    if (token) {
+      inMemoryCsrfToken = token
+      return token
+    }
   } catch {
     // Not fatal here. The request that needs the token will fail with a clear 403
     // rather than this throwing something unrelated during app start-up.
@@ -232,10 +270,15 @@ async function refreshSession(signal) {
           credentials: 'include',
           headers: {
             Accept: 'application/json',
-            ...(readCsrfToken() ? { [CSRF_HEADER_NAME]: readCsrfToken() } : {}),
+            ...(getCsrfToken() ? { [CSRF_HEADER_NAME]: getCsrfToken() } : {}),
           },
           signal,
         })
+        if (response.ok) {
+          const data = await response.json()
+          const token = data?.data?.csrf_token || data?.csrf_token
+          if (token) inMemoryCsrfToken = token
+        }
         return response.ok
       } catch {
         return false
@@ -266,7 +309,7 @@ export async function apiRequest(path, options = {}) {
     // Double-submit (§16): the header must mirror the cookie. Sent on mutations
     // only, because the server ignores it on GET.
     if (isMutation) {
-      const token = readCsrfToken()
+      const token = getCsrfToken()
       if (token) requestHeaders[CSRF_HEADER_NAME] = token
     }
 
@@ -299,7 +342,16 @@ export async function apiRequest(path, options = {}) {
     if (response.status === 204) return null
 
     const contentType = response.headers.get('Content-Type') || ''
-    return contentType.includes('application/json') ? response.json() : response.text()
+    const data = contentType.includes('application/json') ? await response.json() : await response.text()
+
+    // If the response contains a new CSRF token (e.g., from /auth/login, /auth/refresh, /auth/csrf),
+    // store it in memory for cross-origin scenarios where document.cookie is inaccessible.
+    if (data && typeof data === 'object') {
+      const token = data?.data?.csrf_token || data?.csrf_token
+      if (token) inMemoryCsrfToken = token
+    }
+
+    return data
   }
 
   try {
