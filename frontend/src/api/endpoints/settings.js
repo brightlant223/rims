@@ -5,7 +5,7 @@
  * so each function here unwraps `data` — callers only ever see the payload.
  */
 
-import { del, get, post, put } from '../client.js'
+import { BASE_URL, del, get, post, put } from '../client.js'
 
 /** GET /settings/company → the singleton settings row. */
 export const fetchCompanySettings = () => get('/settings/company').then((body) => body.data)
@@ -55,8 +55,13 @@ export const removePaymentQr = () => del('/settings/payment-qr').then((body) => 
 export const logoImageUrl = (settings) => {
   if (!settings?.logo_path) return null
   const version = settings.updated_at || ''
-  const base = import.meta.env.VITE_API_BASE_URL || '/api/v1'
-  return `${base.replace(/\/+$/, '')}/uploads/logo?v=${encodeURIComponent(version)}`
+  // BASE_URL, not import.meta.env.VITE_API_BASE_URL: it is the value that
+  // client.js has already normalized with the /api/v1 prefix. Reading the raw
+  // env var here was the surviving half of audit finding C1 -- an env value
+  // missing the prefix (e.g. https://rqis.pythonanywhere.com) made this return
+  // /uploads/logo, which the Flask SPA fallback answers with index.html, so the
+  // logo would render as a broken image while every other API call worked.
+  return `${BASE_URL}/uploads/logo?v=${encodeURIComponent(version)}`
 }
 
 /**
@@ -72,6 +77,6 @@ export const logoImageUrl = (settings) => {
 export const paymentQrImageUrl = (settings) => {
   if (!settings?.payment_qr_path) return null
   const version = settings.updated_at || ''
-  const base = import.meta.env.VITE_API_BASE_URL || '/api/v1'
-  return `${base.replace(/\/+$/, '')}/uploads/payment-qr?v=${encodeURIComponent(version)}`
+  // See logoImageUrl above: BASE_URL is the normalized base, not the raw env var.
+  return `${BASE_URL}/uploads/payment-qr?v=${encodeURIComponent(version)}`
 }
