@@ -1,3 +1,27 @@
+# =============================================================================
+# DEPRECATED - DO NOT USE
+# =============================================================================
+#
+# This Render deployment blueprint is from before the production deployment
+# moved to PythonAnywhere (backend) + Netlify (frontend). It describes a
+# single-origin architecture (Flask serving frontend/dist) that no longer
+# matches the deployed reality.
+#
+# Current production topology:
+#   Backend:  https://rqis.pythonanywhere.com        (Flask, PythonAnywhere free)
+#   Frontend: https://rqis.netlify.app               (Netlify, builds from source)
+#   Custom:   https://app.ruchitainteriors.in        (Netlify, same build)
+#
+# Deploy instructions now live in README.md and netlify.toml. Netlify reads
+# netlify.toml at build time (see frontend/.env for VITE_API_BASE_URL).
+# PythonAnywhere is configured in its web-app dashboard, not from this repo.
+#
+# This file is kept as a historical reference only. It has been renamed to
+# .legacy so Render's dashboard cannot accidentally apply it.
+#
+# See the 2026-10 audit, finding M5.
+# =============================================================================
+
 # Ruchita Interiors - Render deployment blueprint (Free tier).
 #
 # One Web Service, not a Static Site plus an API. The frontend is built during the

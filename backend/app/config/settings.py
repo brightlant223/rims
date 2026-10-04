@@ -72,7 +72,14 @@ class Settings:
     SECRET_PLACEHOLDERS = frozenset({"change-me", "changeme", "change_me", "please-change-me"})
 
     # CSRF double-submit (§16): a readable cookie plus a matching header.
-    CSRF_COOKIE_NAME = "csrf_token"
+    #
+    # The cookie name gets a `__Secure-` prefix in production, so the browser
+    # refuses to send it over plain HTTP. The access and refresh cookies below
+    # already do this; the CSRF cookie had been left at the plain name in
+    # every environment, which meant the frontend's `__Secure-` expectation
+    # (in `src/api/client.js`) would silently break the double-submit check
+    # on every mutation in production. Aligned here.
+    CSRF_COOKIE_NAME = "csrf_token" if not IS_PRODUCTION else "__Secure-csrf_token"
     CSRF_HEADER_NAME = "X-CSRF-Token"
     CSRF_PROTECTED_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 

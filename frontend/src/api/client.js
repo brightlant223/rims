@@ -15,19 +15,77 @@
  * API base URL, relative by default so every call is same-origin.
  *
  * A relative default is the point: the Vite dev server proxies /api to Flask and
- * production serves both from one origin. An absolute URL pointing at a different
- * port makes the request cross-origin, which breaks auth in two independent ways
- * - the browser withholds SameSite=Lax cookies because "localhost" and "127.0.0.1"
- * are different sites, and the request needs this origin in the server's
- * CORS_ORIGINS. Both failures surface as "Cannot reach the server", so the
- * misconfiguration is invisible until someone loads the app in a browser.
+ * a single-origin production serves both from one origin. An absolute URL pointing
+ * at a different origin breaks auth in two independent ways - the browser withholds
+ * SameSite=Lax cookies because "localhost" and "127.0.0.1" are different sites,
+ * and the request needs this origin in the server's CORS_ORIGINS. Both failures
+ * surface as "Cannot reach the server", so the misconfiguration is invisible
+ * until someone loads the app in a browser.
+ *
+ * **The `/api/v1` suffix is enforced here, not in `.env`.** This guards against
+ * the failure mode documented in the 2026-10 audit: a `.env` that ships an
+ * absolute URL without the version prefix (`https://host.com` instead of
+ * `https://host.com/api/v1`) causes every API call to land on the Flask SPA
+ * fallback, which returns HTTP 200 with `index.html`. The JSON parser then
+ * fails, the UI reports "Cannot reach the server", and nobody can tell
+ * the deploy is broken from the health check - it looks healthy, it just
+ * answers in HTML. `_withApiPrefix` fixes the base URL before it is used,
+ * so this class of misconfiguration is caught in code rather than in docs.
  */
 const RAW_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1'
 
-export const BASE_URL = RAW_BASE_URL.replace(/\/+$/, '')
+const API_VERSION_PATH = '/api/v1'
+
+function _withApiPrefix(base) {
+  // Strip any trailing slash so we can compare/append cleanly.
+  const trimmed = base.replace(/\/+$/, '')
+  // Already correct - leave it alone.
+  if (trimmed === API_VERSION_PATH || trimmed.endsWith(API_VERSION_PATH)) {
+    return trimmed
+  }
+  // Absolute URL without the prefix: append it. `https://host.com` ->
+  // `https://host.com/api/v1`.
+  if (/^https?:\/\//.test(trimmed)) {
+    return trimmed + API_VERSION_PATH
+  }
+  // Relative URL that starts with /api but is not /api/v1 (a typo like
+  // `/api/v2` or `/api/v`): fix to the canonical prefix.
+  if (trimmed.startsWith('/api')) {
+    return API_VERSION_PATH
+  }
+  // Anything else (a bare path like `/v1`, empty string, unexpected shape):
+  // fall back to the canonical prefix so the app is never silently broken.
+  return API_VERSION_PATH
+}
+
+export const BASE_URL = _withApiPrefix(RAW_BASE_URL)
+
+/**
+ * The CSRF cookie name.
+ *
+ * The backend (settings.CSRF_COOKIE_NAME) uses the `__Secure-` prefix in
+ * production so the browser refuses to send the cookie over plain HTTP. This
+ * frontend must read the *same* name or the double-submit check fails on every
+ * mutation.
+ *
+ * The name is chosen from `VITE_CSRF_COOKIE_NAME` if it is set, otherwise it
+ * is inferred from the base URL: an https origin is treated as production
+ * (which uses the `__Secure-` prefix), and a relative/localhost origin is
+ * dev (plain name).
+ *
+ * `VITE_CSRF_COOKIE_NAME` is an explicit escape hatch: tests, and any
+ * deploy where the URL shape and the backend's cookie choice disagree, can
+ * pin the name here. It is not required in normal operation.
+ */
+function _csrfCookieName(baseUrl) {
+  const explicit = import.meta.env.VITE_CSRF_COOKIE_NAME
+  if (explicit) return explicit
+  const isProd = /^https:\/\//.test(baseUrl)
+  return isProd ? '__Secure-csrf_token' : 'csrf_token'
+}
 
 /** Matches the server's CSRF_COOKIE_NAME. Readable by JS by design. */
-const CSRF_COOKIE_NAME = 'csrf_token'
+const CSRF_COOKIE_NAME = _csrfCookieName(BASE_URL)
 const CSRF_HEADER_NAME = 'X-CSRF-Token'
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
 

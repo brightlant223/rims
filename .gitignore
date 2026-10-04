@@ -4,14 +4,14 @@ dist/
 dist-ssr/
 # Service-worker output written by vite-plugin-pwa during `npm run dev`.
 dev-dist/
-# PythonAnywhere has no Node runtime and no build step, so the production bundle
-# has to travel in the repository. Only frontend/dist is shipped; every other
-# directory named `dist` stays ignored. Must stay after the `dist/` rule above:
-# a file inside an ignored directory cannot be re-included by a later pattern.
-!frontend/dist/
+# `frontend/dist/` is a build artifact and is no longer tracked. Netlify
+# builds from source on every deploy (`netlify.toml` runs `npm run build`
+# and publishes `dist`), so the built bundle does not need to travel in the
+# repository. The earlier `!frontend/dist/` exception here is gone.
+#
 # Source maps are ~4.5 MB of the ~6 MB bundle and only affect devtools, so they
-# stay out. Each rebuild fingerprints new filenames, which would otherwise leave a
-# full copy of them in history on every deploy.
+# stay out. Each rebuild fingerprints new filenames, which would otherwise leave
+# a full copy of them in history on every deploy.
 frontend/dist/**/*.map
 
 # ---------- Dev server state ----------
@@ -29,10 +29,17 @@ env/
 .pytest_cache/
 
 # ---------- Environment ----------
-# Never commit real environment files; keep the .example templates.
+# Never commit real environment files. `.env` and any `.env.<name>` variant
+# may hold production credentials. The tracked exceptions below are safe:
+# `.env.example` files are the templates everyone copies from, and
+# `frontend/.env.test` pins test-only values (Vite reads it automatically in
+# Vitest, so the test suite gets deterministic CSRF cookie names regardless
+# of a developer's local `frontend/.env`).
 .env
 .env.*
 !.env.example
+!frontend/.env.example
+!frontend/.env.test
 
 # ---------- Database (local SQLite) ----------
 *.sqlite

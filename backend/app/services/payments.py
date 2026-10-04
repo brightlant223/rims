@@ -42,6 +42,8 @@ The rules that matter:
 
 from __future__ import annotations
 
+from datetime import date, datetime
+
 from app.extensions.database import db
 from app.models.invoice import Invoice, Payment
 from app.services.invoices import paid_paise_for
@@ -112,6 +114,26 @@ def record_payment(
     if amount <= 0:
         raise business_rule("Payment amount must be greater than zero.")
 
+    # Reject a future-dated payment. The dashboard's 30-day received series and
+    # monthly chart group by `paid_on`, so a payment dated next month would
+    # appear as "received today" and then re-date itself to a future bucket —
+    # corrupting the revenue timeline on both surfaces. Today's date is the
+    # accepted ceiling; a late entry can be backdated (a payment received
+    # yesterday but recorded today is still `paid_on`-today, which is fine).
+    paid_on = payload["paid_on"]
+    if isinstance(paid_on, str):
+        # The schema passes a date object, but keep the string path defensive
+        # in case a raw dict ever reaches here outside the normal route.
+        try:
+            paid_on = datetime.fromisoformat(paid_on).date()
+        except (ValueError, TypeError):
+            raise business_rule("Payment date is not a valid date.")
+    if paid_on > date.today():
+        raise business_rule(
+            f"Payment date cannot be in the future. Use today ({date.today().isoformat()}) "
+            "or an earlier date."
+        )
+
     grand_total = invoice.grand_total_paise or 0
 
     # First read of the ledger: rejects the ordinary overpayment with the exact
@@ -125,7 +147,7 @@ def record_payment(
     payment = Payment(
         invoice_id=invoice.id,
         amount_paise=amount,
-        paid_on=payload["paid_on"],
+        paid_on=paid_on,
         method=payload["method"],
         reference=payload.get("reference"),
         notes=payload.get("notes"),

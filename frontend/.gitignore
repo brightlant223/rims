@@ -8,12 +8,32 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-# `dist` is intentionally NOT ignored here. This file is a child of the root
-# .gitignore and wins any conflict, so a `dist` line in it would override the
-# root's `!frontend/dist/` exception and the PythonAnywhere build would have to
-# be produced on the server, which has no Node runtime.
-dist-ssr
-*.local
+
+# Local env files. `frontend/.env` is the only file the Vite build actually
+# reads, so keeping it out of version control is what stops a stale value from
+# sneaking into a deploy. `.env.example` is the tracked template. The root
+# .gitignore also filters `.env*`, but keeping the entries here too is
+# defence-in-depth: a copy of the frontend repo alone still ignores secrets.
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# `dist/` is the built frontend output. It is a build artifact, not source,
+# so it must not be tracked. Netlify builds from source on every deploy
+# (`netlify.toml` runs `npm run build` and publishes `dist`), and
+# `git status` is much quieter when the minified bundle isn't part of every
+# PR diff.
+#
+# Note: the previous version of this file explicitly excluded `dist` from
+# the ignore rule, on the grounds that PythonAnywhere had no Node runtime
+# and needed the pre-built bundle in the repo. Production actually runs on
+# Netlify, which builds from source, so that workaround is stale. The
+# `!frontend/dist/` exception in the root .gitignore has been removed to
+# match. See the 2026-10 audit, finding M6.
+dist/
+dist-ssr/
 
 # Editor directories and files
 .vscode/*

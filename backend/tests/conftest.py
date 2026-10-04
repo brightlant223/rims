@@ -33,6 +33,14 @@ def app(tmp_path):
             "TESTING": True,
             "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path.as_posix()}",
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+            # The developer's local backend/.env may set FLASK_ENV=production,
+            # which would make the settings module choose the production CSRF
+            # cookie name ("__Secure-csrf_token"). Test fixtures and their
+            # helpers throughout the suite hardcode the dev name ("csrf_token"),
+            # so pin it here to keep tests deterministic regardless of the
+            # developer's local environment. The production cookie name itself
+            # is exercised in tests/test_config.py.
+            "CSRF_COOKIE_NAME": "csrf_token",
         }
     )
 
@@ -76,6 +84,42 @@ def _isolate_default_database(tmp_path, monkeypatch):
     monkeypatch.setattr(
         settings, "SQLALCHEMY_DATABASE_URI", f"sqlite:///{db_path.as_posix()}", raising=False
     )
+    yield
+
+
+@pytest.fixture(autouse=True)
+def _pin_dev_csrf_cookie_name(request, monkeypatch):
+    """
+    Force every test app to use the dev CSRF cookie name ("csrf_token").
+
+    The production cookie name is "__Secure-csrf_token" (settings.py chooses it
+    when `IS_PRODUCTION` is True). A developer's local `backend/.env` often has
+    `FLASK_ENV=production` set for local production-mode testing, which makes
+    `create_app()` read the production name. Most test files hardcode the dev
+    name in their own cookie helpers (`_get_csrf`, `_csrf`, ...), so without this
+    pin every such test would fail with a 403 "Security check failed" on the
+    first mutation.
+
+    `tests/test_config.py` explicitly overrides `CSRF_COOKIE_NAME` on the apps
+    it builds, and it is the only suite that exercises the production cookie
+    name, so this pin does not paper over that coverage.
+
+    Monkey-patched on `app.config.settings` (the singleton `create_app` reads
+    from at import time) rather than in the app config dict, because that
+    reaches every `create_app(...)` call the test suite makes — the conftest
+    `app` fixture, plus every per-file helper that builds its own app in
+    `test_auth.py`, `test_bootstrap.py`, `test_config.py`, `test_health.py`,
+    and `test_spa.py`.
+    """
+    from app.config.settings import settings
+
+    if request.node.fspath and "test_config" in str(request.node.fspath):
+        # Let test_config build its apps with the config values it wants —
+        # it exercises the production CSRF name explicitly.
+        yield
+        return
+
+    monkeypatch.setattr(settings, "CSRF_COOKIE_NAME", "csrf_token", raising=False)
     yield
 
 
