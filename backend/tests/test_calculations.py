@@ -14,7 +14,6 @@ from app.services.calculations import (
     calculate_discount,
     calculate_gst,
     calculate_totals,
-    validate_line,
     validate_document,
 )
 
@@ -188,18 +187,6 @@ class TestFullTotals:
 
 class TestValidation:
     """Line and document validation."""
-
-    def test_line_valid(self):
-        errors = validate_line(1000, 10000, "Test Item")
-        assert errors == []
-
-    def test_line_empty_name(self):
-        errors = validate_line(1000, 10000, "")
-        assert "Item name is required" in errors
-
-    def test_line_negative(self):
-        errors = validate_line(-1, 10000, "Test")
-        assert "Quantity cannot be negative" in errors
 
     def test_document_valid(self):
         items = [{"name": "A", "qty_milli": 1000, "rate_paise": 10000}]

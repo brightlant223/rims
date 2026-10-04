@@ -87,19 +87,3 @@ def allocate_number(doc_type: str, year: int | None = None) -> NumberAllocation:
     number = f"{prefix}-{year}-{sequence:04d}"
 
     return NumberAllocation(number=number, year=year, sequence=sequence)
-
-
-def get_next_number_preview(doc_type: str, year: int | None = None) -> str:
-    """
-    Preview the next number that would be allocated (without allocating).
-    Used for UI preview — does not modify the counter.
-    """
-    if year is None:
-        year = date.today().year
-
-    prefix = _get_prefix(doc_type)
-
-    counter = NumberingCounter.query.filter_by(doc_type=doc_type, year=year).first()
-    next_seq = (counter.last_number + 1) if counter else 1
-
-    return f"{prefix}-{year}-{next_seq:04d}"

@@ -26,7 +26,6 @@ from app.services.auth import (
     REFRESH_TOKEN_TYPE,
     clear_auth_cookies,
     decode_token,
-    issue_tokens,
     load_current_user,
     load_user_from_refresh_token,
     set_auth_cookies,

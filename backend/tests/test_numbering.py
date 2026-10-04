@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from app.services.numbering import allocate_number, get_next_number_preview
+from app.services.numbering import allocate_number
 from app.models.counter import NumberingCounter
 from app.extensions.database import db
 
@@ -43,15 +43,6 @@ class TestNumberAllocation:
         counter = NumberingCounter.query.filter_by(doc_type="quotation").first()
         assert counter is not None
         assert counter.last_number == 1
-
-    def test_preview_does_not_allocate(self, authed_client):
-        """Preview shows next number without incrementing counter."""
-        preview1 = get_next_number_preview("quotation")
-        preview2 = get_next_number_preview("quotation")
-        assert preview1 == preview2
-
-        allocation = allocate_number("quotation")
-        assert allocation.number == preview1
 
 
 class TestYearRollover:

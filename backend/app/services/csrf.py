@@ -61,14 +61,6 @@ def set_csrf_cookie(response, token: str | None = None) -> None:
     return token
 
 
-def ensure_csrf_cookie(response):
-    """Add a CSRF cookie if the client does not already have a usable one."""
-    existing = request.cookies.get(_config("CSRF_COOKIE_NAME"))
-    if not existing:
-        set_csrf_cookie(response)
-    return response
-
-
 def verify_csrf() -> None:
     """
     Raise 403 unless the header matches the cookie.

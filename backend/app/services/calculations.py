@@ -46,13 +46,6 @@ def _round_half_up(numerator: int, denominator: int) -> int:
     return int(d.to_integral_value(rounding=ROUND_HALF_UP))
 
 
-def round_paise(value: int) -> int:
-    """No-op for paise (already integer)."""
-    return value
-
-
-# ---- Line calculation ----
-
 def calculate_line_total(qty_milli: int, rate_paise: int) -> LineCalculation:
     """
     line_total_paise = round_half_up(qty_milli * rate_paise / 1000)
@@ -235,20 +228,6 @@ def build_upi_uri(
 
 
 # ---- Validation helpers ----
-
-def validate_line(qty_milli: int, rate_paise: int, name: str) -> list[str]:
-    """Return list of validation errors for a line item (empty if valid)."""
-    errors = []
-    if not name or not name.strip():
-        errors.append("Item name is required")
-    if qty_milli < 0:
-        errors.append("Quantity cannot be negative")
-    if rate_paise < 0:
-        errors.append("Rate cannot be negative")
-    if qty_milli > 10**12 or rate_paise > 10**12:
-        errors.append("Value exceeds maximum allowed")
-    return errors
-
 
 def validate_document(
     line_items: list[dict],
