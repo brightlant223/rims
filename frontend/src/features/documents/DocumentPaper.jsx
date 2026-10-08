@@ -210,7 +210,7 @@ export default function DocumentPaper({
     showMethod || showQr || (showBank && bankRows.length > 0) || (showUpi && Boolean(liveUpiId))
 
   return (
-    <article className={styles.paper} data-document-paper aria-label={documentLabel}>
+    <article className={styles.paper} data-document-paper aria-label={documentLabel} data-theme="light">
       {/* 1. Header band — the same component the Balance / Payment Due sheet uses, so
           the two documents cannot present different letterheads (see DocumentHeader). */}
       <DocumentHeader settings={s} logoSrc={logoSrc} />

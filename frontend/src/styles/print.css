@@ -28,7 +28,8 @@
 @media print {
   html,
   body {
-    background: var(--color-surface);
+    background: #ffffff !important;
+    color: #000000 !important;
     /* Never let a token-font or colour choice push a row out of the page box. */
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
@@ -72,6 +73,8 @@
     border: 0;
     border-radius: 0;
     box-shadow: none;
+    background: #ffffff !important;
+    color: #000000 !important;
   }
 
   /* Repeating header on every page. */

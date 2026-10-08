@@ -167,7 +167,7 @@ class Settings:
     ADMIN_NAME = os.getenv("ADMIN_NAME", "Ruchita Interiors")
 
     # §16 password policy, enforced at seed time and on password change.
-    PASSWORD_MIN_LENGTH = 10
+    PASSWORD_MIN_LENGTH = 8
 
     # §16 login rate limit: 5 attempts per 5 minutes per IP + email.
     LOGIN_RATE_LIMIT_MAX_ATTEMPTS = _as_int("LOGIN_RATE_LIMIT_MAX_ATTEMPTS", 5)

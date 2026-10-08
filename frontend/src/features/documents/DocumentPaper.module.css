@@ -18,8 +18,8 @@
   inline-size: 186mm;
   margin-inline: auto;
   padding: 10mm;
-  background: var(--color-surface);
-  color: var(--color-ink);
+  background: #ffffff;
+  color: #1d1b16;
   font-size: 9.5pt;
   line-height: 1.4;
 }
@@ -27,9 +27,9 @@
 @media screen {
   /* A screen preview of a physical document reads as paper, not as an app card. */
   .paper {
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-md);
+    border: 1px solid #cfc9ba;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgb(29 27 22 / 0.08);
   }
 }
 
@@ -48,13 +48,13 @@
  * / Terms headings on this sheet.
  */
 .labelIcon {
-  color: var(--color-ink-subtle);
+  color: #79736a;
   flex-shrink: 0;
   margin-inline-end: 1mm;
 }
 
 .inlineIcon {
-  color: var(--color-ink-subtle);
+  color: #79736a;
   flex-shrink: 0;
   margin-inline-end: 1.5mm;
   vertical-align: middle;
@@ -88,16 +88,16 @@
 .microLabel {
   min-inline-size: 18mm;
   font-size: 7.5pt;
-  font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-wider);
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--color-ink-subtle);
+  color: #79736a;
 }
 
 .dateValue {
   font-size: 9.5pt;
-  font-weight: var(--weight-medium);
-  color: var(--color-ink);
+  font-weight: 500;
+  color: #1d1b16;
 }
 
 .heading {
@@ -112,19 +112,19 @@
      second and the header has a proper hierarchy instead of the title out-shouting
      the business. */
   font-size: 16pt;
-  font-weight: var(--weight-semibold);
-  line-height: var(--line-height-tight);
-  letter-spacing: var(--tracking-wide);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: var(--color-ink);
+  color: #1d1b16;
 }
 
 .docNumber {
   margin: 1mm 0 0;
   font-size: 11pt;
-  font-weight: var(--weight-semibold);
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: var(--color-ink);
+  color: #1d1b16;
 }
 
 /* ------------------------------------------------------------------ *
@@ -136,7 +136,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4mm;
   padding-block: 3mm;
-  border-block: var(--border-width) solid var(--color-border);
+  border-block: 1px solid #cfc9ba;
 }
 
 /* Two equal columns: Bill To and Project / Site Address. `minmax(0, 1fr)` rather than
@@ -153,17 +153,17 @@
   gap: 1.5mm;
   margin: 0 0 1.5mm;
   font-size: 7.5pt;
-  font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-wider);
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--color-ink-subtle);
+  color: #79736a;
 }
 
 .clientName {
   margin: 0 0 1mm;
   font-size: 11pt;
-  font-weight: var(--weight-semibold);
-  color: var(--color-ink);
+  font-weight: 600;
+  color: #1d1b16;
 }
 
 .clientLine {
@@ -172,7 +172,7 @@
   gap: 1.5mm;
   margin: 0 0 0.5mm;
   font-size: 8.5pt;
-  color: var(--color-ink-muted);
+  color: #57534a;
   overflow-wrap: anywhere;
 }
 
@@ -208,19 +208,19 @@
 .items th {
   padding: 1.5mm 1mm;
   font-size: 7.5pt;
-  font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-wide);
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: start;
-  color: var(--color-ink-subtle);
-  border-block-end: var(--border-width) solid var(--color-border-strong);
+  color: #79736a;
+  border-block-end: 1px solid #cfc9ba;
 }
 
 .items td {
   padding: 1.5mm 1mm;
   vertical-align: top;
-  color: var(--color-ink);
-  border-block-end: var(--border-width) solid var(--color-border);
+  color: #1d1b16;
+  border-block-end: 1px solid #e4e0d5;
 }
 
 .num {
@@ -264,7 +264,7 @@
 .colCategory {
   inline-size: 22mm;
   font-size: 8.5pt;
-  color: var(--color-ink-muted);
+  color: #57534a;
 }
 
 .colItem {
@@ -274,7 +274,7 @@
 .colUnit {
   inline-size: 16mm;
   font-size: 8.5pt;
-  color: var(--color-ink-muted);
+  color: #57534a;
 }
 
 .colNum {
@@ -283,7 +283,7 @@
 
 .itemName {
   display: block;
-  font-weight: var(--weight-medium);
+  font-weight: 500;
   /* Fixed table layout depends on long words being breakable. */
   overflow-wrap: anywhere;
 }
@@ -292,8 +292,8 @@
   display: block;
   margin-block-start: 0.5mm;
   font-size: 8.5pt;
-  font-weight: var(--weight-regular);
-  color: var(--color-ink-muted);
+  font-weight: 400;
+  color: #57534a;
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
@@ -302,19 +302,19 @@
    the eye can follow one section of the work down the page. */
 .categoryRow td {
   padding-block: 1.2mm;
-  background: var(--color-surface-alt);
-  border-block-end: var(--border-width) solid var(--color-border);
+  background: #f1efe9;
+  border-block-end: 1px solid #e4e0d5;
   font-size: 8.5pt;
-  font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-wide);
+  font-weight: 600;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: var(--color-ink-muted);
+  color: #79736a;
 }
 
 .emptyRow {
   padding: 6mm 1mm;
   text-align: center;
-  color: var(--color-ink-subtle);
+  color: #79736a;
 }
 
 /*
@@ -356,7 +356,7 @@
 
 .totalRow dt {
   font-size: 9pt;
-  color: var(--color-ink-muted);
+  color: #79736a;
 }
 
 .totalRow dd {
@@ -364,7 +364,7 @@
   font-size: 9pt;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
-  color: var(--color-ink);
+  color: #1d1b16;
   white-space: nowrap;
 }
 
@@ -373,15 +373,15 @@
 .totalGrand {
   margin-block-start: 1mm;
   padding: 2mm 2.5mm;
-  background: var(--color-gold-soft);
-  border-inline-start: 0.7mm solid var(--color-gold);
+  background: #f5edda;
+  border-inline-start: 0.7mm solid #c9a24b;
 }
 
 .totalGrand dt,
 .totalGrand dd {
   font-size: 11pt;
-  font-weight: var(--weight-bold);
-  color: var(--color-gold-ink);
+  font-weight: 700;
+  color: #6e5620;
 }
 
 /* Balance Due is the number the client is actually asked for, so it gets the
@@ -390,14 +390,14 @@
 .totalBalance {
   margin-block-start: 1mm;
   padding-block-start: 1.5mm;
-  border-block-start: var(--border-width) solid var(--color-border-strong);
+  border-block-start: 1px solid #cfc9ba;
 }
 
 .totalBalance dt,
 .totalBalance dd {
   font-size: 10.5pt;
-  font-weight: var(--weight-bold);
-  color: var(--color-ink);
+  font-weight: 700;
+  color: #1d1b16;
 }
 
 /* ------------------------------------------------------------------ *
@@ -416,7 +416,7 @@
 .payment {
   margin-block-start: 3mm;
   padding-block-start: 2.5mm;
-  border-block-start: var(--border-width) solid var(--color-border);
+  border-block-start: 1px solid #e4e0d5;
   break-inside: avoid;
   page-break-inside: avoid;
 }
@@ -448,7 +448,7 @@
      as fine print to be skimmed rather than terms to be read. The numbering itself is
      supplied by this list — `TermsList` strips any marker typed into the source text so
      a line cannot print as "1. 1.". */
-  color: var(--color-ink);
+  color: #1d1b16;
 }
 
 .termItem {
@@ -469,26 +469,26 @@
 .signatoryLabel {
   margin: 0;
   font-size: 8.5pt;
-  color: var(--color-ink-muted);
+  color: #79736a;
 }
 
 .signatoryName {
   margin: 1mm 0 0;
   font-size: 9.5pt;
-  font-weight: var(--weight-semibold);
-  color: var(--color-ink);
+  font-weight: 600;
+  color: #1d1b16;
 }
 
 .signatureLine {
   margin-block-start: 8mm;
-  border-block-start: var(--border-width) solid var(--color-border-strong);
+  border-block-start: 1px solid #cfc9ba;
 }
 
 .footer {
   margin-block-start: 6mm;
   padding-block-start: 2mm;
-  border-block-start: var(--border-width) solid var(--color-border);
+  border-block-start: 1px solid #e4e0d5;
   font-size: 7.5pt;
   text-align: center;
-  color: var(--color-ink-subtle);
+  color: #79736a;
 }
